@@ -1,15 +1,20 @@
 import { useForm } from "react-hook-form";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Blog } from "../types/Blog";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { blogSchema } from "../utils/validation";
-
+import { useEffect } from "react";
+import { createBlog } from "../api/blogApi";
+import { v4 as uuidv4 } from "uuid";
+import { toast } from "react-toastify";
 type Props = {
   mode: "create" | "edit";
 };
 
 const BlogCreateEdit = ({ mode }: Props) => {
   const { id } = useParams();
+  const navigate = useNavigate();
+
   const {
     register,
     handleSubmit,
@@ -17,7 +22,50 @@ const BlogCreateEdit = ({ mode }: Props) => {
     formState: { errors },
   } = useForm<Blog>({ resolver: zodResolver(blogSchema) });
 
-  
+  // todo
+  useEffect(() => {
+    const getBlog = async () => {
+      if (id && mode === "edit") {
+        try {
+          const data = await fetchBlog(id);
+          setValue("title", data.title);
+          setValue("description", data.description);
+          setValue("image", data.image);
+          setValue("createdAt", data.createdAt);
+        } catch (error) {
+          if (error instanceof Error) {
+            console.error(error);
+            toast.error(error.message);
+          }
+          navigate("/");
+        }
+      }
+    };
+    getBlog();
+  }, [id, mode]);
+
+  const onSubmit = async (data: Blog) => {
+    try {
+      if (mode === "create") {
+        const newBlog = {
+          ...data,
+          id: uuidv4(),
+          createdAt: new Date().toISOString(),
+        };
+        await createBlog(newBlog);
+        toast.success("Blog created successfully!");
+      } else if (mode === "edit" && id) {
+        await updateBlog(id, data);
+        toast.success("Blog updated successfully!");
+      }
+      navigate("/");
+    } catch (error) {
+      if (error instanceof Error) {
+        console.error(error);
+        toast.error("Failed to submit Form");
+      }
+    }
+  };
   return (
     <div className="container mx-auto p-6 font-sans bg-gray-900 min-h-screen text-gray-200">
       <h1 className="text-3xl font-bold text-gray-100 mb-6 border-b-2 border-gray-700 pb-2">
