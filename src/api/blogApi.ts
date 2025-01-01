@@ -46,4 +46,36 @@ export const createBlog = async (blog: Blog): Promise<void> => {
         }
     }
 }
-//buat blog edit
+
+export const fetchBlog = async (id: string): Promise<Blog> => {
+    try {
+        const response = await fetch(`${BASE_URL}/blogs/${id}`)
+        return checkResponse(response)
+    } catch (error) {
+        if (error instanceof Error) {
+            console.error(error);
+            throw new Error(error.message || "Failed to fecth blog");
+        } else {
+            console.error("Unexpected error", error);
+            throw new Error("Failed to fecth blog due to an unknown error");
+        }
+    }
+}
+
+// delete blog berdasarkan id
+export const deleteBlog = async (id: string): Promise<void> => {
+    try {
+        const response = await fetch(`${BASE_URL}/blogs/${id}`, {
+            method: 'DELETE'
+        })
+        await checkResponse(response)
+    } catch (error) {
+        if (error instanceof Error) {
+            console.error(error);
+            throw new Error(error.message || "Failed to delete blog");
+        } else {
+            console.error("Unexpected error", error);
+            throw new Error("Failed to delete blog due to an unknown error");
+        }
+    }
+}

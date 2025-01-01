@@ -4,7 +4,7 @@ import { Blog } from "../types/Blog";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { blogSchema } from "../utils/validation";
 import { useEffect } from "react";
-import { createBlog } from "../api/blogApi";
+import { createBlog, fetchBlog } from "../api/blogApi";
 import { v4 as uuidv4 } from "uuid";
 import { toast } from "react-toastify";
 type Props = {
