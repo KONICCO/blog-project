@@ -4,7 +4,7 @@ import { Blog } from "../types/Blog";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { blogSchema } from "../utils/validation";
 import { useEffect } from "react";
-import { createBlog, fetchBlog } from "../api/blogApi";
+import { createBlog, fetchBlog, updateBlog } from "../api/blogApi";
 import { v4 as uuidv4 } from "uuid";
 import { toast } from "react-toastify";
 type Props = {
@@ -36,13 +36,13 @@ const BlogCreateEdit = ({ mode }: Props) => {
           if (error instanceof Error) {
             console.error(error);
             toast.error(error.message);
+            navigate("/");
           }
-          navigate("/");
         }
       }
     };
     getBlog();
-  }, [id, mode]);
+  }, [id, mode, setValue, navigate]);
 
   const onSubmit = async (data: Blog) => {
     try {

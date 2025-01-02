@@ -3,8 +3,9 @@ import { useNavigate, useParams } from "react-router-dom";
 import { Blog } from "../types/Blog";
 import { toast } from "react-toastify";
 import { deleteBlog, fetchBlog } from "../api/blogApi";
-import Modal from "../components/MOdal";
+
 import BlogDetailSkeleton from "../components/skeletons/BlogDetailSkeleton";
+import Modal from "../components/Modal";
 
 function BlogDetail() {
   const { id } = useParams();
